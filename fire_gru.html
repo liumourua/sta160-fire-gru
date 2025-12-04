@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>GRU & Hazard RNN – Wildfire Ignition & Re-ignition</title>
+  <style>
+    body { font-family: Arial, sans-serif; max-width: 1100px; margin: 0 auto; padding: 20px; }
+    h1, h2, h3 { font-weight: 600; }
+    iframe { border: none; margin-bottom: 32px; }
+    .section { margin-bottom: 40px; }
+  </style>
+</head>
+<body>
+
+<h1>Short-term ignition (GRU) and post-fire hazard analysis</h1>
+
+<div class="section">
+  <h2>Methods (summary)</h2>
+  <p>
+    We model daily wildfire ignition on a 10–15 km grid using a GRU with a learned
+    spatial ignition prior and history-safe meteorological covariates. The GRU
+    predicts the probability that at least one new fire occurs in the next
+    7 or 14 days, with strict time splits between training (2013–2021),
+    validation (2022), and test (2023–2025).
+  </p>
+  <p>
+    For post-fire hazard, we merge ignitions within 3 days into a single episode
+    and compute waiting times between episodes for each site. A discrete-time
+    hazard model provides regional estimates of median inter-fire gaps and the
+    probability of re-ignition within 30 or 60 days.
+  </p>
+</div>
+
+<div class="section">
+  <h2>GRU performance by region (k = 14)</h2>
+  <p>Interactive PR curves for all region × latitude bands. Click legend entries to toggle regions.</p>
+  <iframe src="plots/gru_pr_curves.html" width="100%" height="520"></iframe>
+</div>
+
+<div class="section">
+  <h2>Overall GRU metrics by region and horizon</h2>
+  <p>Summary PR-AUC, ROC-AUC, base rate, and Brier scores from <code>gru.csv</code>.</p>
+  <iframe src="plots/gru_summary.html" width="100%" height="520"></iframe>
+</div>
+
+<div class="section">
+  <h2>Effect of the spatial prior (Top-3% precision)</h2>
+  <p>
+    For each region, this plot compares Top-3% precision with vs. without the ignition prior
+    at horizons k = 7 and k = 14.
+  </p>
+  <iframe src="plots/delta_top3.html" width="100%" height="520"></iframe>
+</div>
+
+<div class="section">
+  <h2>Recommended operating points (k = 7 and k = 14)</h2>
+  <p>
+    Thresholds chosen to target ≈30% precision (or a small Top-K rule when that is not feasible),
+    showing region-specific coverage, precision, and recall.
+  </p>
+  <iframe src="plots/operating_points.html" width="100%" height="520"></iframe>
+</div>
+
+<div class="section">
+  <h2>Post-fire hazard: median waiting time</h2>
+  <p>Regions are ordered by median days between consecutive fire episodes.</p>
+  <iframe src="plots/hazard_waiting.html" width="100%" height="520"></iframe>
+</div>
+
+<div class="section">
+  <h2>Post-fire hazard: 30- and 60-day re-ignition probability</h2>
+  <p>
+    Bars show the cumulative probability that a site re-ignites within 30 or 60 days
+    after the previous fire.
+  </p>
+  <iframe src="plots/hazard_cumprob.html" width="100%" height="520"></iframe>
+</div>
+
+</body>
+</html>
